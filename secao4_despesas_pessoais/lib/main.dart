@@ -1,137 +1,121 @@
 import 'package:flutter/material.dart';
-import 'package:secao4_despesas_pessoais/models/transaction.dart';
-import 'package:intl/intl.dart';
+import 'package:secao4_despesas_pessoais/components/chart.dart';
+import 'package:secao4_despesas_pessoais/components/transaction_form.dart';
+import 'dart:math';
+import '../models/transaction.dart';
+import 'components/transaction_list.dart';
 
 main() => runApp(ExpensesApp());
 
 class ExpensesApp extends StatelessWidget {
+  final ThemeData tema = ThemeData();
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: MyHomePage(),
+      theme: ThemeData(
+        useMaterial3: false,
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.purple,
+          foregroundColor: Colors.white,
+        ),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.amber,
+          primary: Colors.purple,
+          secondary: Colors.amber,
+        )
+      )
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  final titleController = TextEditingController();
-  final valueController = TextEditingController();
+class MyHomePage extends StatefulWidget {
 
-  final _transactions = [
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  final List<Transaction> _transactions = [
+    Transaction(
+      id: 't0',
+      title: 'Conta Antiga',
+      value: 400,
+      date: DateTime.now().subtract(Duration(days: 33))
+    ),
     Transaction(
       id: 't1',
-      title: 'Novo Tênis de Corrida',
+      title: 'Tênis Novo',
       value: 310.76,
-      date: DateTime.now(),
+      date: DateTime.now().subtract(Duration(days: 3))
     ),
     Transaction(
       id: 't2',
-      title: 'Conta de Luz',
-      value: 211.30,
-      date: DateTime.now(),
+      title: 'Conta Luz',
+      value: 101.45,
+      date: DateTime.now().subtract(Duration(days: 4))
     ),
   ];
+
+  List<Transaction> get _recentTransactions{
+    return _transactions.where((tr) {
+      return tr.date.isAfter(DateTime.now().subtract(
+        Duration(days: 7),
+      ));
+    }).toList();
+  }
+
+  _openTransactionFormModal(BuildContext context){
+    showModalBottomSheet(
+      context: context,
+      builder: (_){
+        return TransactionForm(_addTransaction);
+      }
+    );
+  }
+
+  _addTransaction(String title, double value){
+    final newTransaction = Transaction(
+      id: Random().nextDouble().toString(),
+      title: title,
+      value: value,
+      date: DateTime.now()
+    );
+
+    setState((){
+      _transactions.add(newTransaction);
+    });
+
+    Navigator.of(context).pop();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Despesas Pessoais'),
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Container(
-            width: double.infinity,
-            child: Card (
-              elevation: 5,
-              child: Text('Gráfico'),
-            ),
-          ),
-          Column(
-            children: _transactions.map((tr){
-              return Card(
-                child: Row (
-                  children: <Widget> [
-                    Container(
-                      margin: EdgeInsets.symmetric(
-                        horizontal: 15,
-                        vertical: 10,
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Colors.purple,
-                          width: 2,
-                        ),
-                      ),
-                      padding: EdgeInsets.all(10),
-                      child: Text(
-                        'R\$ ${tr.value.toStringAsFixed(2)}',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                          color: Colors.purple,
-                        ),
-                      ),
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          tr.title,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),  
-                        ),
-                        Text(
-                          DateFormat('d MMM y').format(tr.date),
-                          style: TextStyle(color: Colors.grey[700],),  
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              );
-            }).toList(),
-          ),
-          Card(
-            elevation: 5,
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: Column(
-                children: <Widget>[
-                  TextField(
-                    controller: titleController,
-                    decoration: InputDecoration(
-                      labelText: 'Título',
-                    ),
-                  ),
-                  TextField(
-                    controller: valueController,
-                    decoration: InputDecoration(
-                      labelText: 'Valor (R\$)',
-                    ),
-                  ),
-                  TextButton(
-                    child: Text(
-                      'Nova Transação',
-                      style:TextStyle(
-                        color: Colors.purple,
-                      )
-                    ),
-                    onPressed: () {
-                      print(titleController.text);
-                      print(valueController.text);
-                    },
-                  ),
-                ]
-              ),
-            ),
-          ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () => _openTransactionFormModal(context),
+          )
         ],
       ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Chart(_recentTransactions),
+            TransactionList(_transactions),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () => _openTransactionFormModal(context),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }
