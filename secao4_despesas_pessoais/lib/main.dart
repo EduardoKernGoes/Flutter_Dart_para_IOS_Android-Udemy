@@ -1,7 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:secao4_despesas_pessoais/components/chart.dart';
 import 'package:secao4_despesas_pessoais/components/transaction_form.dart';
 import 'dart:math';
+import 'dart:io';
 import '../models/transaction.dart';
 import 'components/transaction_list.dart';
 
@@ -157,49 +159,74 @@ class _MyHomePageState extends State<MyHomePage> {
     Navigator.of(context).pop();
   }
 
+  Widget _getIconButton(IconData icon, Function () fn) {
+    return Platform.isIOS ? 
+    GestureDetector(
+      onTap: fn, child: Icon(icon),
+    )
+    : 
+    IconButton(
+      icon: Icon(icon),
+      onPressed: fn,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final appBar = AppBar(
-      title: Text('Despesas Pessoais'),
-      actions: <Widget>[
-        IconButton(
-          icon: Icon(Icons.add),
-          onPressed: () => _openTransactionFormModal(context),
+    final mediaQuery = MediaQuery.of(context);
+    bool isLandscape = mediaQuery.orientation == Orientation.landscape;
+    final actions = <Widget>[
+        if(isLandscape)
+          _getIconButton(
+            _showChart ? Icons.list : Icons.show_chart,
+            () {
+              setState(() {
+                _showChart = !_showChart;
+              });
+            },
+          ),
+        _getIconButton(
+          Platform.isIOS ? CupertinoIcons.add : Icons.add,() => _openTransactionFormModal(context)
         )
-      ],
+      ];
+    final PreferredSizeWidget appBar = AppBar(
+      title: Text('Despesas Pessoais'),
+      actions: actions,
     );
-    final availabelHeight = MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top - appBar.preferredSize.height;
+    final availabelHeight = mediaQuery.size.height - mediaQuery.padding.top - appBar.preferredSize.height;
+    final bodyPage = SafeArea(
+      child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              if(_showChart || !isLandscape)
+              Container(
+                height: availabelHeight * (isLandscape ? 0.85 : 0.25),
+                child: Chart(_recentTransactions)
+              ),
+              if(!_showChart || !isLandscape)
+              Container(
+                height: availabelHeight * (isLandscape ? 0.9 : 0.68),
+                child: TransactionList(_transactions, _deleteTransaction)
+              ),
+            ],
+          ),
+        ),
+    );
 
-    return Scaffold(
-      appBar: appBar,
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text('Exibir Gráfico'),
-                Switch(value: _showChart, onChanged: (value) {
-                  setState(() {
-                    _showChart = value;
-                  });
-                },),
-              ],
-            ),
-            if(_showChart)
-            Container(
-              height: availabelHeight * 0.25,
-              child: Chart(_recentTransactions)
-            ),
-            if(!_showChart)
-            Container(
-              height: availabelHeight * 0.75,
-              child: TransactionList(_transactions, _deleteTransaction)
-            ),
-          ],
+    return Platform.isIOS ? 
+    CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        middle: Text('Despesas Pessoais'),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: actions,
         ),
       ),
+      child: bodyPage,
+    ) : Scaffold(
+      appBar: appBar,
+      body: bodyPage,
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () => _openTransactionFormModal(context),
