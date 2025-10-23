@@ -4,7 +4,7 @@ import 'package:secao8_gerenciamento_de_estado/models/cart.dart';
 import 'package:secao8_gerenciamento_de_estado/models/product.dart';
 import 'package:secao8_gerenciamento_de_estado/utils/app_routes.dart';
 
-class ProductItem extends StatelessWidget {
+class ProductGridItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +27,17 @@ class ProductItem extends StatelessWidget {
           trailing: IconButton(
             onPressed: () {
               cart.addItem(product);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Produto Adicionado com Sucesso!!!'),
+                  action: SnackBarAction(
+                    label: 'Desfazer',
+                    onPressed: () {
+                      cart.removeSingleItem(product.id);
+                    }
+                  )
+                )
+              );
             },
             icon: Icon(Icons.shopping_cart),
             color: Theme.of(context).colorScheme.secondary,

@@ -12,7 +12,9 @@ class OrdersPages extends StatelessWidget {
     final OrderList orders = Provider.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Meus pedidos')
+        title: Text('Meus pedidos'),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        foregroundColor: Colors.white,
       ),
       drawer: AppDrawer(),
       body: ListView.builder(

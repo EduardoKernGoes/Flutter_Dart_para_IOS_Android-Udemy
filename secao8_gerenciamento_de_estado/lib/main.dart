@@ -6,6 +6,7 @@ import 'package:secao8_gerenciamento_de_estado/models/product_list.dart';
 import 'package:secao8_gerenciamento_de_estado/pages/cart_page.dart';
 import 'package:secao8_gerenciamento_de_estado/pages/orders_pages.dart';
 import 'package:secao8_gerenciamento_de_estado/pages/product_detail_page.dart';
+import 'package:secao8_gerenciamento_de_estado/pages/product_page.dart';
 import 'package:secao8_gerenciamento_de_estado/pages/products_overview_page.dart';
 import 'package:secao8_gerenciamento_de_estado/utils/app_routes.dart';
 
@@ -36,6 +37,7 @@ class MyApp extends StatelessWidget {
           AppRoutes.PRODUCT_DETAIL: (ctx) => ProductDetailPage(),
           AppRoutes.CART: (ctx) => CartPage(),
           AppRoutes.ORDERS: (ctx) => OrdersPages(),
+          AppRoutes.PRODUCTS: (ctx) => ProductPage(),
         },
         debugShowCheckedModeBanner: false,
       ),
