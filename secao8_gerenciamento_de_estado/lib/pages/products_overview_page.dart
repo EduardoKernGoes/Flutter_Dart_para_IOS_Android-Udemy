@@ -1,28 +1,63 @@
 import 'package:flutter/material.dart';
-import 'package:secao8_gerenciamento_de_estado/components/product_item.dart';
-import '../data/dummy_data.dart';
-import '../models/product.dart';
+import 'package:provider/provider.dart';
+import 'package:secao8_gerenciamento_de_estado/components/app_drawer.dart';
+import 'package:secao8_gerenciamento_de_estado/components/badgee.dart';
+import 'package:secao8_gerenciamento_de_estado/components/product_grid.dart';
+import 'package:secao8_gerenciamento_de_estado/models/cart.dart';
+import 'package:secao8_gerenciamento_de_estado/models/product_list.dart';
+import 'package:secao8_gerenciamento_de_estado/utils/app_routes.dart';
+
+enum FilterOptions {
+  favorite, all
+}
 
 class ProductsOverviewPage extends StatelessWidget {
-  final List<Product> loadedProducts = dummyProducts;
-
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<ProductList>(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Minha loja')
+        centerTitle: true,
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        foregroundColor: Colors.white,
+        title: Text('Minha loja'),
+        actions: [
+          PopupMenuButton(
+            itemBuilder: (_) => [
+              PopupMenuItem(
+                value: FilterOptions.all,
+                child: Text('Todos'),
+              ),
+              PopupMenuItem(
+                value: FilterOptions.favorite,
+                child: Text('Somente Favoritos'),
+              ),
+            ],
+            onSelected: (FilterOptions selectedValue){
+              if(selectedValue == FilterOptions.favorite){
+                provider.showFavoriteOnly();
+              }else{
+                provider.showAll();
+              }
+            },
+          ),
+          Consumer<Cart>(
+            child: IconButton(
+                onPressed: () {
+                  Navigator.of(context).pushNamed(AppRoutes.CART);
+                },
+                icon: Icon(Icons.shopping_cart),
+              ),
+            builder: (ctx, cart, child) => Badgee(
+              value: cart.itemsCount.toString(),
+              child: child!,
+            ),
+          )
+        ],
       ),
-      body: GridView.builder(
-        padding: EdgeInsets.all(10),
-        itemCount: loadedProducts.length,
-        itemBuilder: (ctx, i) => ProductItem(product: loadedProducts[i]),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          childAspectRatio: 3/2,
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
-        ),
-      ),
+      body: ProductGrid(),
+      drawer: AppDrawer(),
     );
   }
 }
