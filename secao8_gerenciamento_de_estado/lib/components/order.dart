@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:secao8_gerenciamento_de_estado/models/order.dart';
-import 'package:secao8_gerenciamento_de_estado/models/product.dart';
 
 class OrderWidget extends StatefulWidget {
   final Order order;
