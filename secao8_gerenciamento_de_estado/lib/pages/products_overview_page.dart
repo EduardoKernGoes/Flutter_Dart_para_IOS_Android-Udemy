@@ -17,6 +17,7 @@ class ProductsOverviewPage extends StatefulWidget {
 }
 
 class _ProductsOverviewPageState extends State<ProductsOverviewPage> {
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -24,7 +25,11 @@ class _ProductsOverviewPageState extends State<ProductsOverviewPage> {
     Provider.of<ProductList>(
       context,
       listen: false
-    ).loadProducts();
+    ).loadProducts().then((value) {
+      setState(() {
+        _isLoading = false;
+      });
+    });
   }
   
   @override
@@ -71,7 +76,7 @@ class _ProductsOverviewPageState extends State<ProductsOverviewPage> {
           )
         ],
       ),
-      body: ProductGrid(),
+      body: _isLoading ? Center(child: CircularProgressIndicator()) : ProductGrid(),
       drawer: AppDrawer(),
     );
   }
