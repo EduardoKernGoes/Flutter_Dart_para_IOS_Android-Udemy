@@ -38,13 +38,13 @@ class ProductItem extends StatelessWidget {
                     content: Text('Tem certeza?'),
                     actions: [
                       TextButton(
-                        onPressed: () => Navigator.of(ctx).pop,
+                        onPressed: () => Navigator.of(ctx).pop(),
                         child: Text('Não')
                       ),
                       TextButton(
                         onPressed: () {
                           Provider.of<ProductList>(context, listen: false).removeProduct(product);
-                          Navigator.of(ctx).pop;
+                          Navigator.of(ctx).pop();
                         },
                         child: Text('Sim')
                       ),
