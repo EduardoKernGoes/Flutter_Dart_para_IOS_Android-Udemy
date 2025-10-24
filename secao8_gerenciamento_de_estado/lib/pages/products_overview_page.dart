@@ -11,7 +11,22 @@ enum FilterOptions {
   favorite, all
 }
 
-class ProductsOverviewPage extends StatelessWidget {
+class ProductsOverviewPage extends StatefulWidget {
+  @override
+  State<ProductsOverviewPage> createState() => _ProductsOverviewPageState();
+}
+
+class _ProductsOverviewPageState extends State<ProductsOverviewPage> {
+
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<ProductList>(
+      context,
+      listen: false
+    ).loadProducts();
+  }
+  
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<ProductList>(context);

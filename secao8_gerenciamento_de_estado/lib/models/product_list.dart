@@ -31,6 +31,11 @@ class ProductList with ChangeNotifier{
     notifyListeners();
   }
 
+  Future<void> loadProducts() async {
+    final response = await http.get(Uri.parse(_url));
+    print(response.body);
+  }
+
   Future<void> saveProduct (Map<String, Object> data){
     bool hasId = data['id'] != null;
 
