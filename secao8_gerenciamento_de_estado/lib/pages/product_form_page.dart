@@ -83,7 +83,21 @@ class _ProductFormPageState extends State<ProductFormPage> {
 
     Provider.of<ProductList>(
       context,
-      listen: false).saveProduct(_formData).then((value) {
+      listen: false).saveProduct(_formData).catchError((e){
+        return showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: Text('Erro'),
+            content: Text('Ocorreu um erro ao salvar o produto'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text('OK'),
+              )
+            ]
+          )
+        );
+      }).then((value) {
         setState(() {
           _isLoading = false;
         });
