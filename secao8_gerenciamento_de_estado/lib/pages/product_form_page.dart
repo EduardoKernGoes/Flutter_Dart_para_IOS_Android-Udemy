@@ -13,10 +13,14 @@ class ProductFormPage extends StatefulWidget {
 class _ProductFormPageState extends State<ProductFormPage> {
   final _priceFocus = FocusNode();
   final _descriptionFocus = FocusNode();
+
   final _imageUrlFocus = FocusNode();
   final _imageUrlController = TextEditingController();
+
   final _formKey = GlobalKey<FormState>();
   final _formData = Map<String, Object>();
+
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -73,9 +77,19 @@ class _ProductFormPageState extends State<ProductFormPage> {
 
     _formKey.currentState?.save();
 
-    Provider.of<ProductList>(context, listen: false).saveProduct(_formData);
+    setState(() {
+      _isLoading = true;
+    });
 
-    Navigator.of(context).pop();
+    Provider.of<ProductList>(
+      context,
+      listen: false).saveProduct(_formData).then((value) {
+        setState(() {
+          _isLoading = false;
+        });
+
+        Navigator.of(context).pop();
+    });
   }
 
   @override
@@ -92,7 +106,10 @@ class _ProductFormPageState extends State<ProductFormPage> {
           )
         ],
       ),
-      body: Padding(
+      body: _isLoading ?
+      Center(child: CircularProgressIndicator())
+      :
+      Padding(
         padding: const EdgeInsets.all(15),
         child: Form(
           key: _formKey,
