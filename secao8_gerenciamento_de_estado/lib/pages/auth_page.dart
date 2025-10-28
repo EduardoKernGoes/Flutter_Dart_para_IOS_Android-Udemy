@@ -30,6 +30,7 @@ class AuthPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
+                  margin: EdgeInsets.only(bottom: 20),
                   padding: EdgeInsets.symmetric(vertical: 10, horizontal: 70),
                   transform: Matrix4.rotationZ(-8 * pi /180)..translateByDouble(-10, 0, 0, 1),
                   decoration: BoxDecoration(

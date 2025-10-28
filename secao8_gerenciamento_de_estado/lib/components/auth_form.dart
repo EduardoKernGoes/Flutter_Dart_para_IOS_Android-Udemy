@@ -17,9 +17,20 @@ class _AuthFormState extends State<AuthForm> {
     'password': '',
   };
 
-  void _submit (){
+  bool _isLogin() => _authMode == AuthMode.Login;
+  bool _isSignup() => _authMode == AuthMode.Signup;
 
+  void _switchAuthMode(){
+    setState(() {
+      if(_isLogin()){
+        _authMode = AuthMode.Signup;
+      } else {
+        _authMode = AuthMode.Login;
+      }
+    });
   }
+
+  void _submit (){}
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +51,7 @@ class _AuthFormState extends State<AuthForm> {
                 decoration: InputDecoration(labelText: 'E-mail'),
                 keyboardType: TextInputType.emailAddress,
                 onSaved: (email) => _authData['email'] = email ?? '',
-                validator: _authMode == AuthMode.Login ? null : (_email){
+                validator: _isLogin() ? null : (_email){
                   final email = _email ?? '';
                   if(email.trim().isEmpty || !email.contains('@')){
                     return 'Informe um e-mail válido';
@@ -62,12 +73,12 @@ class _AuthFormState extends State<AuthForm> {
                   return null;
                 },
               ),
-              if(_authMode == AuthMode.Login)
+              if(_isSignup())
                 TextFormField(
                   decoration: InputDecoration(labelText: 'Confirmar Senha'),
                   keyboardType: TextInputType.emailAddress,
                   obscureText: true,
-                  validator: (_password){
+                  validator: _isLogin() ? null : (_password){
                     final password = _password ?? '';
                     if(password != _passwordController){
                       return 'Senhas informadas não conferem';
@@ -88,6 +99,16 @@ class _AuthFormState extends State<AuthForm> {
                     color: Colors.white,
                   ),
                 ),
+              ),
+              Spacer(),
+              TextButton(
+                onPressed: _switchAuthMode,
+                child: Text(
+                  _isLogin() ? 'DESEJA REGISTRAR?' : 'JÁ POSSUI CONTA?',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                )
               ),
             ],
           )
