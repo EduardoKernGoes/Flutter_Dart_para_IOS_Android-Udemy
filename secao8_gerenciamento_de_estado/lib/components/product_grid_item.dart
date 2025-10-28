@@ -19,7 +19,7 @@ class ProductGridItem extends StatelessWidget {
           title: Text(product.title, textAlign: TextAlign.center),
           leading: Consumer<Product>(
             builder: (ctx, product, _) => IconButton(
-              onPressed: () {product.toggleFavorite();},
+              onPressed: () => product.toggleFavorite(),
               icon: Icon(product.isFavorite ? Icons.favorite : Icons.favorite_border),
               color: Theme.of(context).colorScheme.secondary,
             ),
