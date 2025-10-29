@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:secao8_gerenciamento_de_estado/models/auth.dart';
 import 'package:secao8_gerenciamento_de_estado/models/cart.dart';
 import 'package:secao8_gerenciamento_de_estado/models/order_list.dart';
 import 'package:secao8_gerenciamento_de_estado/models/product_list.dart';
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ProductList()),
         ChangeNotifierProvider(create: (_) => Cart()),
         ChangeNotifierProvider(create: (_) => OrderList()),
+        ChangeNotifierProvider(create: (_) => Auth()),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
