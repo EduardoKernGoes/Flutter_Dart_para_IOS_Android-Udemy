@@ -4,6 +4,7 @@ import 'package:secao8_gerenciamento_de_estado/models/auth.dart';
 import 'package:secao8_gerenciamento_de_estado/models/cart.dart';
 import 'package:secao8_gerenciamento_de_estado/models/order_list.dart';
 import 'package:secao8_gerenciamento_de_estado/models/product_list.dart';
+import 'package:secao8_gerenciamento_de_estado/pages/auth_or_home_page.dart';
 import 'package:secao8_gerenciamento_de_estado/pages/auth_page.dart';
 import 'package:secao8_gerenciamento_de_estado/pages/cart_page.dart';
 import 'package:secao8_gerenciamento_de_estado/pages/orders_pages.dart';
@@ -35,10 +36,9 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.purple).copyWith(secondary: Colors.deepOrange),
           fontFamily: 'Lato',
         ),
-        home: AuthPage(),
+        home: AuthOrHomePage(),
         routes: {
-          AppRoutes.AUTH: (ctx) => AuthPage(),
-          AppRoutes.HOME: (ctx) => ProductsOverviewPage(),
+          AppRoutes.AUTH_OR_HOME: (ctx) => AuthOrHomePage(),
           AppRoutes.PRODUCT_DETAIL: (ctx) => ProductDetailPage(),
           AppRoutes.CART: (ctx) => CartPage(),
           AppRoutes.ORDERS: (ctx) => OrdersPages(),
